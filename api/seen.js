@@ -1,6 +1,5 @@
 // Slaat een titel op in de 'gezien'-lijst
 import { kv } from "@vercel/kv";
-export const config = { runtime: "edge" };
 
 export default async req => {
   const { imdb_id, user = "anon" } = await req.json();
