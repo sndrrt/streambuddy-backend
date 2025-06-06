@@ -1,6 +1,7 @@
 {
-  "type": "module",
-  "dependencies": {
-    "@vercel/kv": "latest"
+  "functions": {
+    "functions/*": {
+      "runtime": "nodejs18.x"
+    }
   }
 }
