@@ -1,6 +1,5 @@
 // Geeft 1 on-gezien streamingtip terug
 import { kv } from "@vercel/kv";
-export const config = { runtime: "edge" };
 
 export default async function handler(req) {
   const { searchParams } = new URL(req.url);
