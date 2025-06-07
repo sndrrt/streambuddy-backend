@@ -1,4 +1,3 @@
-// Geeft 1 on-gezien streamingtip terug
 import { kv } from "@vercel/kv";
 
 export default async function handler(req) {
@@ -9,10 +8,8 @@ export default async function handler(req) {
   const lang = searchParams.get("lang") || "en";
   const user = searchParams.get("user") || "anon";
 
-  // 1. lijst met al-gezien titels
   const seen = (await kv.smembers(`seen:${user}`)) ?? [];
 
-  // 2. TMDB-zoek-url samenstellen
   console.log("TMDB KEY:", process.env.TMDB_KEY);
   const url = `https://api.themoviedb.org/3/discover/movie` +
     `?api_key=${process.env.TMDB_KEY}` +
@@ -23,15 +20,28 @@ export default async function handler(req) {
 
   const data = await fetch(url).then(r => r.json());
 
-  // 3. eerste resultaat dat nog niet gezien is
+  if (!data.results || data.results.length === 0) {
+    return new Response(
+      JSON.stringify({ error: "Geen resultaten van TMDB." }),
+      { status: 500, headers: { "content-type": "application/json" } }
+    );
+  }
+
   const pick = data.results.find(t => !seen.includes(String(t.id)));
+
+  if (!pick) {
+    return new Response(
+      JSON.stringify({ error: "Geen geschikte suggestie gevonden." }),
+      { status: 404, headers: { "content-type": "application/json" } }
+    );
+  }
 
   return new Response(
     JSON.stringify({
       title: pick.title ?? pick.name,
       overview: pick.overview,
       provider: providers[0],
-      link: `https://www.themoviedb.org/${pick.media_type}/${pick.id}`
+      link: `https://www.themoviedb.org/${pick.media_type ?? "movie"}/${pick.id}`
     }),
     { headers: { "content-type": "application/json" } }
   );
