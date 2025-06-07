@@ -13,6 +13,7 @@ export default async function handler(req) {
   const seen = (await kv.smembers(`seen:${user}`)) ?? [];
 
   // 2. TMDB-zoek-url samenstellen
+  console.log("TMDB KEY:", process.env.TMDB_KEY);
   const url = `https://api.themoviedb.org/3/discover/movie` +
     `?api_key=${process.env.TMDB_KEY}` +
     `&with_watch_providers=${providers.join("|")}` +
