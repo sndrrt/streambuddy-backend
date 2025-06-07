@@ -1,7 +1,4 @@
 {
-  "functions": {
-    "functions/*": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  "type": "module",
+  "dependencies": {}
 }
