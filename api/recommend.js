@@ -44,5 +44,12 @@ export default async function handler(req) {
       link: `https://www.themoviedb.org/${pick.media_type ?? "movie"}/${pick.id}`
     }),
     { headers: { "content-type": "application/json" } }
+
+    if (!process.env.TMDB_KEY) {
+  return new Response(
+    JSON.stringify({ error: "TMDB_KEY is missing in environment." }),
+    { status: 500, headers: { "content-type": "application/json" } }
+  );
+}
   );
 }
